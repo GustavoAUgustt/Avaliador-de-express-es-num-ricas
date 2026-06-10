@@ -1,1 +1,1 @@
-# Avaliador-de-express-es-num-ricas
+# Avaliador de expressões numéricas
