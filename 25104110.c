@@ -24,7 +24,7 @@ float popFloat(PilhaFloat *p) {
     return p->itens[p->topo--];
 }
 
-void pushString(PilhaString *p, char *s) {
+void pushString(PilhaString *p, const char *s) {
     strcpy(p->itens[++p->topo], s);
 }
 
@@ -32,7 +32,7 @@ char *popString(PilhaString *p) {
     return p->itens[p->topo--];
 }
 
-int operador(char *s) {
+int operador(const char *s) {
     return !strcmp(s, "+") ||
            !strcmp(s, "-") ||
            !strcmp(s, "*") ||
@@ -41,7 +41,7 @@ int operador(char *s) {
            !strcmp(s, "^");
 }
 
-int funcao(char *s) {
+int funcao(const char *s) {
     return !strcmp(s, "sen") ||
            !strcmp(s, "cos") ||
            !strcmp(s, "tan") ||
@@ -50,7 +50,7 @@ int funcao(char *s) {
 }
 
 float graus(float x) {
-    return x * M_PI / 180.0;
+    return x * 3.14159265358979323846 / 180.0;
 }
 
 float getValor(char *Str) {
@@ -63,72 +63,72 @@ float getValor(char *Str) {
 
     char *token = strtok(copia, " ");
 
-    while(token) {
+    while (token) {
 
-        if(operador(token)) {
+        if (operador(token)) {
 
-            if(p.topo < 1)
+            if (p.topo < 1)
                 return NAN;
 
             float b = popFloat(&p);
             float a = popFloat(&p);
 
-            if(!strcmp(token, "+"))
-                pushFloat(&p, a+b);
+            if (!strcmp(token, "+"))
+                pushFloat(&p, a + b);
 
-            else if(!strcmp(token, "-"))
-                pushFloat(&p, a-b);
+            else if (!strcmp(token, "-"))
+                pushFloat(&p, a - b);
 
-            else if(!strcmp(token, "*"))
-                pushFloat(&p, a*b);
+            else if (!strcmp(token, "*"))
+                pushFloat(&p, a * b);
 
-            else if(!strcmp(token, "/")) {
+            else if (!strcmp(token, "/")) {
 
-                if(b == 0)
+                if (b == 0)
                     return NAN;
 
-                pushFloat(&p, a/b);
+                pushFloat(&p, a / b);
             }
 
-            else if(!strcmp(token, "%")) {
+            else if (!strcmp(token, "%")) {
 
-                if(b == 0)
+                if (b == 0)
                     return NAN;
 
                 pushFloat(&p, (int)a % (int)b);
             }
 
-            else if(!strcmp(token, "^"))
-                pushFloat(&p, pow(a,b));
+            else if (!strcmp(token, "^"))
+                pushFloat(&p, pow(a, b));
 
         }
-        else if(funcao(token)) {
+        else if (funcao(token)) {
 
-            if(p.topo < 0)
+            if (p.topo < 0)
                 return NAN;
 
             float a = popFloat(&p);
 
-            if(!strcmp(token, "sen"))
+            if (!strcmp(token, "sen"))
                 pushFloat(&p, sin(graus(a)));
 
-            else if(!strcmp(token, "cos"))
+            else if (!strcmp(token, "cos"))
                 pushFloat(&p, cos(graus(a)));
 
-            else if(!strcmp(token, "tan"))
+            else if (!strcmp(token, "tan"))
                 pushFloat(&p, tan(graus(a)));
 
-            else if(!strcmp(token, "log")) {
+            else if (!strcmp(token, "log")) {
 
-                if(a <= 0)
+                if (a <= 0)
                     return NAN;
 
                 pushFloat(&p, log10(a));
             }
 
-            else if(!strcmp(token, "sqrt")) {
+            else if (!strcmp(token, "sqrt")) {
 
-                if(a < 0)
+                if (a < 0)
                     return NAN;
 
                 pushFloat(&p, sqrt(a));
@@ -142,7 +142,7 @@ float getValor(char *Str) {
         token = strtok(NULL, " ");
     }
 
-    if(p.topo != 0)
+    if (p.topo != 0)
         return NAN;
 
     return popFloat(&p);
@@ -160,11 +160,11 @@ char *getInFixa(char *Str) {
 
     char *token = strtok(copia, " ");
 
-    while(token) {
+    while (token) {
 
-        if(operador(token)) {
+        if (operador(token)) {
 
-            if(p.topo < 1)
+            if (p.topo < 1)
                 return NULL;
 
             char b[MAX];
@@ -178,9 +178,10 @@ char *getInFixa(char *Str) {
 
             pushString(&p, expr);
         }
-        else if(funcao(token)) {
 
-            if(p.topo < 0)
+        else if (funcao(token)) {
+
+            if (p.topo < 0)
                 return NULL;
 
             char a[MAX];
@@ -192,6 +193,7 @@ char *getInFixa(char *Str) {
 
             pushString(&p, expr);
         }
+
         else {
             pushString(&p, token);
         }
@@ -199,7 +201,7 @@ char *getInFixa(char *Str) {
         token = strtok(NULL, " ");
     }
 
-    if(p.topo != 0)
+    if (p.topo != 0)
         return NULL;
 
     strcpy(resultado, popString(&p));
